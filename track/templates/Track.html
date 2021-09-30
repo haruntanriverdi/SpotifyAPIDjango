@@ -29,6 +29,7 @@
 
                 <tr>
                     <th scope="col">#</th>
+                    <th scope="col">Album Image</th>
                     <th scope="col">Artist Name</th>
                     <th scope="col">Track Name</th>
                     <th scope="col">Popularity</th>
@@ -40,6 +41,7 @@
                 {% for item in track_list %}
                     <tr>
                         <th scope="row">{{ forloop.counter }}</th>
+                        <td style="text-align: center;"><img src="{{ item.3 }}"/></td>
                         <td>{{ random_artist }}</td>
                         <td>{{ item.0 }}</td>
                         <td>{{ item.1 }}</td>

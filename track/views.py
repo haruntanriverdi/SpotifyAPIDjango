@@ -31,7 +31,6 @@ def GenerateToken():
                                    "grant_type": 'client_credentials'
                                })
     token = credential.json()
-    print(token)
 
     return token, credential.status_code
 
@@ -47,7 +46,6 @@ def HomeView(request):
     if request.method == "POST":
         form = GenreForm(request.POST)
         if form.is_valid():
-            print(request.POST['genres'])
             return redirect('track', request.POST['genres'])
     else:
         form = GenreForm()
@@ -68,7 +66,6 @@ def TrackView(request, genre):
         if status_code == '401':
             token, response_code = GenerateToken()
             msg_fail = f'Token may be expire. Retrying to get access token...'
-            print(msg_fail)
 
         access_token = token['access_token']
 
@@ -78,38 +75,26 @@ def TrackView(request, genre):
             params={'q': random_artist, 'type': 'track', 'limit': 50, 'market': 'TR', 'include_external': 'audio'})
 
         json_response = artist_info.json()
+        print(json_response)
         for data in json_response['tracks']['items']:
-            # print(data['artists'][0]['name'])
+            album_image = data['album']['images'][2]['url']
             track_name = data['name']
-            # print(track_name)
             track_popularity = data['popularity']
             track_preview = data['preview_url']
 
-            track_list.append((track_name, track_popularity, track_preview))
+            track_list.append((track_name, track_popularity, track_preview, album_image))
             track_list.sort(key=lambda x: int(x[1]), reverse=True)
 
             track_list = track_list[:10]
 
     except HTTPError as httpError:
         msg_fail = f'HTTP error occured: {httpError}'
-        print(msg_fail)
     except KeyError as keyError:
 
         msg_fail = f'Key error occured. Please check client information: {keyError}'
-        print(msg_fail)
     except Exception as err:
 
         msg_fail = f'Other error occured: {err}'
-        print(msg_fail)
 
     return render(request, 'Track.html',
                   {'track_list': track_list, 'msg_fail': msg_fail, 'random_artist': random_artist.capitalize()})
-
-def error_404(request, exception):
-        data = {}
-        return render(request, '404.html', data)
-
-
-def error_500(request, exception):
-    data = {}
-    return render(request, '500.html', data)
