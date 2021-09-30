@@ -75,7 +75,7 @@ def TrackView(request, genre):
             params={'q': random_artist, 'type': 'track', 'limit': 50, 'market': 'TR', 'include_external': 'audio'})
 
         json_response = artist_info.json()
-        print(json_response)
+        # print(json_response)
         for data in json_response['tracks']['items']:
             album_image = data['album']['images'][2]['url']
             track_name = data['name']
